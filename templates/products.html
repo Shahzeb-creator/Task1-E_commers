@@ -1,0 +1,784 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+    /* VIP Products Page Styles */
+    
+     :root {
+        --vip-gradient: linear-gradient(135deg, #2563eb, #8b5cf6);
+        --gold: #f59e0b;
+        --dark: #0f172a;
+        --light: #f8fafc;
+    }
+    
+    .vip-products-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+    
+    .vip-products-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    
+    .vip-products-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin: 0;
+        background: var(--vip-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        position: relative;
+        padding-bottom: 15px;
+    }
+    
+    .vip-products-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 80px;
+        height: 4px;
+        background: var(--vip-gradient);
+        border-radius: 2px;
+    }
+    
+    .vip-products-controls {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .vip-filter-btn {
+        background: white;
+        border: 2px solid #2563eb;
+        color: #2563eb;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+    
+    .vip-filter-btn:hover {
+        background: #2563eb;
+        color: white;
+    }
+    
+    .vip-sort-dropdown .btn {
+        background: white;
+        border: 2px solid #2563eb;
+        color: #2563eb;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+    
+    .vip-sort-dropdown .btn:hover {
+        background: #2563eb;
+        color: white;
+    }
+    
+    .vip-sort-dropdown .dropdown-menu {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        margin-top: 10px;
+    }
+    
+    .vip-sort-dropdown .dropdown-item {
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    
+    .vip-sort-dropdown .dropdown-item:hover {
+        background: var(--vip-gradient);
+        color: white !important;
+    }
+    
+    .vip-category-badge {
+        background: var(--vip-gradient);
+        color: white;
+        font-weight: 700;
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-left: 20px;
+    }
+    
+    .vip-products-grid {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 30px;
+    }
+    
+    .vip-filters-sidebar {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        height: fit-content;
+        position: sticky;
+        top: 100px;
+    }
+    
+    .vip-filters-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .vip-filters-title {
+        font-weight: 700;
+        font-size: 1.3rem;
+        color: var(--dark);
+        margin: 0;
+    }
+    
+    .vip-clear-filters {
+        background: transparent;
+        border: none;
+        color: #2563eb;
+        font-weight: 500;
+        padding: 0;
+        cursor: pointer;
+    }
+    
+    .vip-filter-section {
+        margin-bottom: 25px;
+    }
+    
+    .vip-filter-section-title {
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .vip-filter-options {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .vip-filter-option {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .vip-filter-checkbox {
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        border: 2px solid #cbd5e1;
+        margin-right: 10px;
+        position: relative;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+    
+    .vip-filter-checkbox input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+    
+    .vip-checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--vip-gradient);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .vip-filter-checkbox input:checked~.vip-checkmark {
+        opacity: 1;
+    }
+    
+    .vip-checkmark i {
+        color: white;
+        font-size: 0.8rem;
+    }
+    
+    .vip-filter-label {
+        color: #64748b;
+        font-weight: 500;
+        cursor: pointer;
+    }
+    
+    .vip-range-slider {
+        width: 100%;
+        height: 5px;
+        background: #e2e8f0;
+        border-radius: 5px;
+        margin: 20px 0;
+        position: relative;
+    }
+    
+    .vip-range-progress {
+        height: 100%;
+        background: var(--vip-gradient);
+        border-radius: 5px;
+        position: absolute;
+        left: 0;
+        right: 75%;
+    }
+    
+    .vip-range-inputs {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    
+    .vip-range-input {
+        flex: 1;
+        padding: 8px 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+    
+    .vip-products-grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+    }
+    
+    .vip-product-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s ease;
+        position: relative;
+        height: 100%;
+    }
+    
+    .vip-product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(37, 99, 235, 0.2);
+    }
+    
+    .vip-product-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 1;
+        background: var(--vip-gradient);
+        color: white;
+        font-weight: 700;
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .vip-vip-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--gold);
+        color: white;
+        font-weight: 700;
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .vip-product-image {
+        height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8fafc;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .vip-product-image img {
+        max-height: 180px;
+        transition: transform 0.4s;
+    }
+    
+    .vip-product-card:hover .vip-product-image img {
+        transform: scale(1.05);
+    }
+    
+    .vip-product-body {
+        padding: 25px;
+    }
+    
+    .vip-product-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 10px;
+        color: var(--dark);
+    }
+    
+    .vip-product-price {
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: #2563eb;
+        margin-bottom: 15px;
+    }
+    
+    .vip-product-description {
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+        min-height: 60px;
+    }
+    
+    .vip-product-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    
+    .btn-view-details {
+        background: transparent;
+        border: 2px solid #2563eb;
+        color: #2563eb;
+        font-weight: 600;
+        padding: 8px 15px;
+        border-radius: 8px;
+        flex-grow: 1;
+        transition: all 0.3s;
+        text-align: center;
+        text-decoration: none;
+    }
+    
+    .btn-view-details:hover {
+        background: #2563eb;
+        color: white;
+    }
+    
+    .btn-add-to-cart {
+        background: var(--vip-gradient);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        font-weight: 600;
+        border-radius: 8px;
+        flex-grow: 1;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .btn-add-to-cart:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(37, 99, 235, 0.3);
+    }
+    
+    .vip-no-products {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 50px 20px;
+    }
+    
+    .vip-no-products-icon {
+        font-size: 5rem;
+        color: #cbd5e1;
+        margin-bottom: 20px;
+    }
+    
+    .vip-no-products-title {
+        font-weight: 700;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+        color: var(--dark);
+    }
+    
+    .vip-no-products-text {
+        color: #64748b;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .vip-pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 50px;
+    }
+    
+    .vip-pagination .page-item {
+        margin: 0 5px;
+    }
+    
+    .vip-pagination .page-link {
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        color: #2563eb;
+        font-weight: 600;
+        min-width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+    
+    .vip-pagination .page-link:hover {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+    }
+    
+    .vip-pagination .page-item.active .page-link {
+        background: var(--vip-gradient);
+        color: white;
+        border-color: transparent;
+    }
+    /* Responsive adjustments */
+    
+    @media (max-width: 1200px) {
+        .vip-products-grid {
+            grid-template-columns: 1fr;
+        }
+        .vip-filters-sidebar {
+            position: static;
+            margin-bottom: 30px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .vip-products-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .vip-products-title {
+            font-size: 2rem;
+            padding-bottom: 10px;
+        }
+        .vip-products-controls {
+            width: 100%;
+            justify-content: space-between;
+        }
+        .vip-category-badge {
+            margin-left: 0;
+            margin-top: 10px;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .vip-products-title {
+            font-size: 1.8rem;
+        }
+        .vip-filter-btn,
+        .vip-sort-dropdown .btn {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        .vip-products-grid-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="vip-products-container">
+    <div class="vip-products-header">
+        <div>
+            <h1 class="vip-products-title">
+                {% if category %} {{ category }} {% else %} Premium Products {% endif %}
+            </h1>
+            {% if category %}
+            <span class="vip-category-badge">VIP Category</span> {% endif %}
+        </div>
+
+        <div class="vip-products-controls">
+            <button class="vip-filter-btn">
+                <i class="fas fa-filter"></i> Filters
+            </button>
+
+            <div class="vip-sort-dropdown dropdown">
+                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-sort"></i> Sort By
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Price: Low to High</a></li>
+                    <li><a class="dropdown-item" href="#">Price: High to Low</a></li>
+                    <li><a class="dropdown-item" href="#">Newest First</a></li>
+                    <li><a class="dropdown-item" href="#">VIP Exclusive</a></li>
+                    <li><a class="dropdown-item" href="#">Best Sellers</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="vip-products-grid">
+        <div class="vip-filters-sidebar">
+            <div class="vip-filters-header">
+                <h3 class="vip-filters-title">Filters</h3>
+                <button class="vip-clear-filters">Clear All</button>
+            </div>
+
+            <div class="vip-filter-section">
+                <h4 class="vip-filter-section-title">
+                    <i class="fas fa-tags"></i> Categories
+                </h4>
+                <ul class="vip-filter-options">
+                    <li class="vip-filter-option">
+                        <div class="vip-filter-checkbox">
+                            <input type="checkbox" id="cat-electronics">
+                            <span class="vip-checkmark">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        <label for="cat-electronics" class="vip-filter-label">Electronics</label>
+                    </li>
+                    <li class="vip-filter-option">
+                        <div class="vip-filter-checkbox">
+                            <input type="checkbox" id="cat-accessories">
+                            <span class="vip-checkmark">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        <label for="cat-accessories" class="vip-filter-label">Accessories</label>
+                    </li>
+                    <li class="vip-filter-option">
+                        <div class="vip-filter-checkbox">
+                            <input type="checkbox" id="cat-books">
+                            <span class="vip-checkmark">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        <label for="cat-books" class="vip-filter-label">Books</label>
+                    </li>
+                    <li class="vip-filter-option">
+                        <div class="vip-filter-checkbox">
+                            <input type="checkbox" id="cat-gaming">
+                            <span class="vip-checkmark">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        <label for="cat-gaming" class="vip-filter-label">Gaming</label>
+                    </li>
+                    <li class="vip-filter-option">
+                        <div class="vip-filter-checkbox">
+                            <input type="checkbox" id="cat-photography">
+                            <span class="vip-checkmark">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        <label for="cat-photography" class="vip-filter-label">Photography</label>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="vip-filter-section">
+                <h4 class="vip-filter-section-title">
+                    <i class="fas fa-dollar-sign"></i> Price Range
+                </h4>
+                <div class="vip-range-slider">
+                    <div class="vip-range-progress"></div>
+                </div>
+                <div class="vip-range-inputs">
+                    <input type="text" class="vip-range-input" value="$0">
+                    <input type="text" class="vip-range-input" value="$2000">
+                </div>
+            </div>
+
+            <div class="vip-filter-section">
+                <h4 class="vip-filter-section-title">
+                    <i class="fas fa-star"></i> Rating
+                </h4>
+                <ul class="vip-filter-options">
+                    <li class="vip-filter-option">
+                        <div class="vip-filter-checkbox">
+                            <input type="checkbox" id="rating-5">
+                            <span class="vip-checkmark">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        <label for="rating-5" class="vip-filter-label">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </label>
+                    </li>
+                    <li class="vip-filter-option">
+                        <div class="vip-filter-checkbox">
+                            <input type="checkbox" id="rating-4">
+                            <span class="vip-checkmark">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        <label for="rating-4" class="vip-filter-label">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star"></i>
+                            4+ stars
+                        </label>
+                    </li>
+                    <li class="vip-filter-option">
+                        <div class="vip-filter-checkbox">
+                            <input type="checkbox" id="rating-3">
+                            <span class="vip-checkmark">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        <label for="rating-3" class="vip-filter-label">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            3+ stars
+                        </label>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="vip-filter-section">
+                <h4 class="vip-filter-section-title">
+                    <i class="fas fa-crown"></i> VIP Features
+                </h4>
+                <ul class="vip-filter-options">
+                    <li class="vip-filter-option">
+                        <div class="vip-filter-checkbox">
+                            <input type="checkbox" id="vip-exclusive">
+                            <span class="vip-checkmark">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        <label for="vip-exclusive" class="vip-filter-label">VIP Exclusive</label>
+                    </li>
+                    <li class="vip-filter-option">
+                        <div class="vip-filter-checkbox">
+                            <input type="checkbox" id="free-shipping">
+                            <span class="vip-checkmark">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        <label for="free-shipping" class="vip-filter-label">Free Shipping</label>
+                    </li>
+                    <li class="vip-filter-option">
+                        <div class="vip-filter-checkbox">
+                            <input type="checkbox" id="discounted">
+                            <span class="vip-checkmark">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        <label for="discounted" class="vip-filter-label">Discounted</label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="vip-products-list">
+            {% if products %}
+            <div class="vip-products-grid-container">
+                {% for product in products %}
+                <div class="vip-product-card">
+                    <div class="vip-product-image">
+                        <img src="{{ product.image_url or 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' }}" alt="{{ product.name }}">
+                        <span class="vip-product-badge">{{ product.category }}</span>
+                        <span class="vip-vip-badge">VIP</span>
+                    </div>
+                    <div class="vip-product-body">
+                        <h3 class="vip-product-title">{{ product.name }}</h3>
+                        <div class="vip-product-price">${{ product.price }}</div>
+                        <p class="vip-product-description">{{ product.description|truncate(100) }}</p>
+                        <div class="vip-product-actions">
+                            <a href="{{ url_for('product_detail', id=product.id) }}" class="btn-view-details">
+                                <i class="fas fa-eye me-1"></i> Details
+                            </a>
+                            <button class="btn-add-to-cart">
+                                <i class="fas fa-shopping-cart"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="vip-no-products">
+                <div class="vip-no-products-icon">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <h3 class="vip-no-products-title">No Products Found</h3>
+                <p class="vip-no-products-text">
+                    We couldn't find any products matching your criteria. Try adjusting your filters or browse our full collection.
+                </p>
+                <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg">
+                    Browse All Products
+                </a>
+            </div>
+            {% endif %}
+
+            <div class="vip-pagination">
+                <ul class="pagination">
+                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add interactivity to filter checkboxes
+    document.querySelectorAll('.vip-filter-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('click', function() {
+            const checkmark = this.querySelector('.vip-checkmark');
+            const input = this.querySelector('input');
+            input.checked = !input.checked;
+
+            if (input.checked) {
+                checkmark.style.opacity = '1';
+            } else {
+                checkmark.style.opacity = '0';
+            }
+        });
+    });
+</script>
+{% endblock %}

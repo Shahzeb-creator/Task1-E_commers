@@ -1,0 +1,506 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+     :root {
+        --vip-gradient: linear-gradient(135deg, #2563eb, #8b5cf6);
+        --gold: #f59e0b;
+        --dark: #0f172a;
+        --light: #f8fafc;
+    }
+    
+    .vip-cart-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .vip-cart-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        background: var(--vip-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-align: center;
+        position: relative;
+        padding-bottom: 15px;
+    }
+    
+    .vip-cart-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: var(--vip-gradient);
+        border-radius: 2px;
+    }
+    
+    .vip-empty-cart {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+        max-width: 600px;
+        margin: 50px auto;
+    }
+    
+    .vip-empty-cart .icon {
+        font-size: 5rem;
+        color: #cbd5e1;
+        margin-bottom: 20px;
+    }
+    
+    .vip-empty-cart h3 {
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--dark);
+    }
+    
+    .vip-empty-cart p {
+        color: #64748b;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+    
+    .btn-vip {
+        background: var(--vip-gradient);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        font-weight: 600;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .btn-vip:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4);
+    }
+    
+    .vip-cart-grid {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 30px;
+    }
+    
+    .vip-cart-items {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+    }
+    
+    .vip-cart-header {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 0.5fr;
+        gap: 15px;
+        padding: 20px;
+        background: #f1f5f9;
+        font-weight: 600;
+        color: var(--dark);
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .vip-cart-item {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 0.5fr;
+        gap: 15px;
+        padding: 20px;
+        border-bottom: 1px solid #e2e8f0;
+        align-items: center;
+    }
+    
+    .vip-cart-item:last-child {
+        border-bottom: none;
+    }
+    
+    .vip-product-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .vip-product-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .vip-product-image img {
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+    }
+    
+    .vip-product-details h4 {
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: var(--dark);
+    }
+    
+    .vip-product-details .category {
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+    
+    .vip-price {
+        font-weight: 700;
+        color: var(--dark);
+    }
+    
+    .vip-quantity {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .vip-quantity input {
+        width: 70px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        text-align: center;
+        font-weight: 500;
+    }
+    
+    .vip-update-btn {
+        background: transparent;
+        border: 1px solid #2563eb;
+        color: #2563eb;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-weight: 500;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    
+    .vip-update-btn:hover {
+        background: #2563eb;
+        color: white;
+    }
+    
+    .vip-total {
+        font-weight: 800;
+        color: #2563eb;
+    }
+    
+    .vip-remove-btn {
+        background: transparent;
+        border: none;
+        color: #ef4444;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+    
+    .vip-remove-btn:hover {
+        background: #fee2e2;
+    }
+    
+    .vip-summary-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+        padding: 25px;
+        position: sticky;
+        top: 100px;
+    }
+    
+    .vip-summary-title {
+        font-weight: 800;
+        font-size: 1.5rem;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f1f5f9;
+        color: var(--dark);
+    }
+    
+    .vip-summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .vip-summary-label {
+        color: #64748b;
+    }
+    
+    .vip-summary-value {
+        font-weight: 600;
+        color: var(--dark);
+    }
+    
+    .vip-grand-total {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 0;
+        margin: 15px 0;
+        font-size: 1.2rem;
+        font-weight: 800;
+        border-top: 2px dashed #e2e8f0;
+        border-bottom: 2px dashed #e2e8f0;
+    }
+    
+    .vip-checkout-btn {
+        background: var(--vip-gradient);
+        color: white;
+        border: none;
+        padding: 15px;
+        font-weight: 600;
+        border-radius: 12px;
+        width: 100%;
+        transition: all 0.3s;
+        font-size: 1.1rem;
+        margin-top: 20px;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+    
+    .vip-checkout-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4);
+    }
+    
+    .vip-continue-shopping {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #2563eb;
+        font-weight: 500;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+    
+    .vip-continue-shopping:hover {
+        color: #1d4ed8;
+        text-decoration: underline;
+    }
+    
+    .vip-cart-badge {
+        background: var(--gold);
+        color: white;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        margin-left: 10px;
+        vertical-align: middle;
+    }
+    /* Responsive adjustments */
+    
+    @media (max-width: 992px) {
+        .vip-cart-grid {
+            grid-template-columns: 1fr;
+        }
+        .vip-cart-header {
+            display: none;
+        }
+        .vip-cart-item {
+            grid-template-columns: 1fr;
+            grid-template-areas: "product" "price" "quantity" "total" "remove";
+            gap: 15px;
+            padding: 15px;
+            position: relative;
+        }
+        .vip-product-info {
+            grid-area: product;
+        }
+        .vip-price {
+            grid-area: price;
+        }
+        .vip-quantity {
+            grid-area: quantity;
+        }
+        .vip-total {
+            grid-area: total;
+        }
+        .vip-remove-btn {
+            grid-area: remove;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .vip-cart-title {
+            font-size: 2rem;
+        }
+        .vip-product-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .vip-quantity {
+            flex-wrap: wrap;
+        }
+    }
+</style>
+
+<div class="vip-cart-container">
+    <h1 class="vip-cart-title">Shopping Cart <span class="vip-cart-badge">VIP</span></h1>
+
+    {% if not cart_items %}
+    <div class="vip-empty-cart">
+        <div class="icon">
+            <i class="fas fa-shopping-cart"></i>
+        </div>
+        <h3>Your VIP Cart is Empty</h3>
+        <p>Looks like you haven't added any premium products to your cart yet.</p>
+        <a href="{{ url_for('products') }}" class="btn-vip">
+            <i class="fas fa-bolt me-2"></i>Explore Premium Products
+        </a>
+    </div>
+    {% else %}
+    <div class="vip-cart-grid">
+        <div class="vip-cart-items">
+            <div class="vip-cart-header">
+                <div>Product</div>
+                <div>Price</div>
+                <div>Quantity</div>
+                <div>Total</div>
+                <div></div>
+            </div>
+
+            {% for item in cart_items %}
+            <div class="vip-cart-item">
+                <div class="vip-product-info">
+                    <div class="vip-product-image">
+                        <img src="{{ item.product.image_url or 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' }}" alt="{{ item.product.name }}">
+                    </div>
+                    <div class="vip-product-details">
+                        <h4>{{ item.product.name }}</h4>
+                        <div class="category">{{ item.product.category }}</div>
+                    </div>
+                </div>
+
+                <div class="vip-price">${{ item.product.price }}</div>
+
+                <div class="vip-quantity">
+                    <form method="POST" action="{{ url_for('update_cart') }}" class="d-flex align-items-center">
+                        <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control">
+                        <button type="submit" class="vip-update-btn">Update</button>
+                    </form>
+                </div>
+
+                <div class="vip-total">${{ item.total }}</div>
+
+                <div>
+                    <a href="{{ url_for('remove_from_cart', product_id=item.product.id) }}" class="vip-remove-btn">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="vip-summary-card">
+            <h3 class="vip-summary-title">Order Summary</h3>
+
+            <div class="vip-summary-item">
+                <span class="vip-summary-label">Subtotal</span>
+                <span class="vip-summary-value">${{ total }}</span>
+            </div>
+
+            <div class="vip-summary-item">
+                <span class="vip-summary-label">VIP Discount</span>
+                <span class="vip-summary-value">- ${{ (total * 0.1)|round(2) }}</span>
+            </div>
+
+            <div class="vip-summary-item">
+                <span class="vip-summary-label">Shipping</span>
+                <span class="vip-summary-value">Free</span>
+            </div>
+
+            <div class="vip-grand-total">
+                <span>Total</span>
+                <span>${{ (total * 0.9)|round(2) }}</span>
+            </div>
+
+            <a href="{{ url_for('checkout') }}" class="vip-checkout-btn">
+                <i class="fas fa-lock me-2"></i>Secure Checkout
+            </a>
+
+            <a href="{{ url_for('products') }}" class="vip-continue-shopping">
+                <i class="fas fa-arrow-left me-1"></i> Continue Shopping
+            </a>
+
+            <div class="vip-benefits mt-4">
+                <h5 class="mb-3">VIP Benefits Applied:</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex align-items-center bg-transparent border-0 p-1">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>10% VIP Discount Applied</span>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center bg-transparent border-0 p-1">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Free Priority Shipping</span>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center bg-transparent border-0 p-1">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Extended Warranty Coverage</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    from flask import Flask, render_template, request, redirect, url_for, session, flash from flask_sqlalchemy import SQLAlchemy from werkzeug.security import generate_password_hash, check_password_hash from datetime import datetime import os app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///techshop.db' app.config['SECRET_KEY'] = 'your_secret_key_here' db = SQLAlchemy(app) # Database Models class User(db.Model): id = db.Column(db.Integer, primary_key=True) username = db.Column(db.String(80),
+    unique=True, nullable=False) email = db.Column(db.String(120), unique=True, nullable=False) password = db.Column(db.String(200), nullable=False) is_vip = db.Column(db.Boolean, default=False) orders = db.relationship('Order', backref='user', lazy=True)
+    class Product(db.Model): id = db.Column(db.Integer, primary_key=True) name = db.Column(db.String(100), nullable=False) price = db.Column(db.Float, nullable=False) description = db.Column(db.Text, nullable=True) image_url = db.Column(db.String(200),
+    nullable=True) category = db.Column(db.String(50), nullable=True) class Order(db.Model): id = db.Column(db.Integer, primary_key=True) user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) total = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(20), default='Processing') created_at = db.Column(db.DateTime, default=datetime.utcnow) items = db.relationship('OrderItem', backref='order', lazy=True) class OrderItem(db.Model): id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False) product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False) quantity = db.Column(db.Integer, nullable=False) product = db.relationship('Product') # Create
+    database and sample data def init_db(): with app.app_context(): db.create_all() # Create sample products if none exist if not Product.query.first(): products = [ Product(name="Premium Laptop", price=999.99, category="Electronics", description="High-performance
+    laptop with 16GB RAM", image_url="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"), Product(name="Wireless Headphones", price=149.99, category="Electronics", description="Noise-cancelling
+    headphones", image_url="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"), Product(name="Smart Watch", price=249.99, category="Electronics", description="Fitness tracker with heart rate monitor",
+    image_url="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"), Product(name="Bluetooth Speaker", price=89.99, category="Electronics", description="Portable speaker with 12-hour battery", image_url="https://images.unsplash.com/photo-1546435770-a3e426bf472b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"),
+    ] db.session.bulk_save_objects(products) db.session.commit() print("Created sample products") init_db() # Routes @app.route('/') def home(): products = Product.query.limit(4).all() return render_template('home.html', products=products) @app.route('/products')
+    def products(): products = Product.query.all() return render_template('products.html', products=products) @app.route('/product/
+
+    <int:id>') def product_detail(id): product = Product.query.get_or_404(id) return render_template('product_detail.html', product=product) @app.route('/add_to_cart', methods=['POST']) def add_to_cart(): product_id = request.form.get('product_id') quantity =
+        int(request.form.get('quantity', 1)) if 'cart' not in session: session['cart'] = {} cart = session['cart'] cart[str(product_id)] = cart.get(str(product_id), 0) + quantity session['cart'] = cart flash('Product added to cart!', 'success') return
+        redirect(url_for('product_detail', id=product_id)) @app.route('/cart') def view_cart(): cart_items = [] total = 0 if 'cart' in session: for product_id, quantity in session['cart'].items(): product = Product.query.get(product_id) if product: item_total
+        = product.price * quantity cart_items.append({ 'product': product, 'quantity': quantity, 'total': item_total }) total += item_total return render_template('cart.html', cart_items=cart_items, total=total) @app.route('/remove_from_cart/
+
+        <int:product_id>') def remove_from_cart(product_id): if 'cart' in session and str(product_id) in session['cart']: del session['cart'][str(product_id)] flash('Item removed from cart', 'info') return redirect(url_for('view_cart')) @app.route('/update_cart', methods=['POST'])
+            def update_cart(): product_id = request.form.get('product_id') quantity = int(request.form.get('quantity', 1)) if 'cart' in session and str(product_id) in session['cart']: cart = session['cart'] if quantity > 0: cart[str(product_id)] = quantity
+            else: del cart[str(product_id)] session['cart'] = cart flash('Cart updated!', 'info') return redirect(url_for('view_cart')) @app.route('/checkout', methods=['POST']) def checkout(): if 'user_id' not in session: flash('Please login to complete
+            your order', 'warning') return redirect(url_for('login')) # Create order user_id = session['user_id'] cart = session.get('cart', {}) if not cart: flash('Your cart is empty', 'warning') return redirect(url_for('home')) # Calculate total total
+            = sum( Product.query.get(int(id)).price * qty for id, qty in cart.items() ) # Create order record order = Order(user_id=user_id, total=total) db.session.add(order) db.session.commit() # Create order items for product_id, quantity in cart.items():
+            item = OrderItem( order_id=order.id, product_id=product_id, quantity=quantity ) db.session.add(item) db.session.commit() # Clear cart session.pop('cart', None) return render_template('order_confirmation.html', order_id=order.id) @app.route('/register',
+            methods=['GET', 'POST']) def register(): if request.method == 'POST': username = request.form['username'] email = request.form['email'] password = request.form['password'] confirm_password = request.form['confirm_password'] if password !=
+            confirm_password: flash('Passwords do not match', 'danger') return redirect(url_for('register')) existing_user = User.query.filter((User.username == username) | (User.email == email)).first() if existing_user: flash('Username or email already
+            exists', 'danger') return redirect(url_for('register')) hashed_password = generate_password_hash(password) new_user = User(username=username, email=email, password=hashed_password) db.session.add(new_user) db.session.commit() flash('Registration
+            successful! Please login', 'success') return redirect(url_for('login')) return render_template('register.html') @app.route('/login', methods=['GET', 'POST']) def login(): if request.method == 'POST': username = request.form['username'] password
+            = request.form['password'] user = User.query.filter_by(username=username).first() if user and check_password_hash(user.password, password): session['user_id'] = user.id session['username'] = user.username flash('Login successful!', 'success')
+            return redirect(url_for('home')) else: flash('Invalid username or password', 'danger') return render_template('login.html') @app.route('/logout') def logout(): session.clear() flash('You have been logged out', 'info') return redirect(url_for('home'))
+            @app.route('/orders') def orders(): if 'user_id' not in session: return redirect(url_for('login')) user_orders = Order.query.filter_by(user_id=session['user_id']).order_by(Order.created_at.desc()).all() return render_template('orders.html',
+            orders=user_orders) if __name__ == '__main__': app.run(debug=True) {% endif %}
+</div>
+{% endblock %}

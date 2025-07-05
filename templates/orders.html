@@ -1,0 +1,578 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+    /* VIP Orders Page Styles */
+    
+     :root {
+        --vip-gradient: linear-gradient(135deg, #2563eb, #8b5cf6);
+        --gold: #f59e0b;
+        --dark: #0f172a;
+        --light: #f8fafc;
+    }
+    
+    .vip-orders-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+    
+    .vip-orders-header {
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+    }
+    
+    .vip-orders-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 2.5rem;
+        display: inline-block;
+        background: var(--vip-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 15px;
+    }
+    
+    .vip-orders-subtitle {
+        color: #64748b;
+        font-size: 1.2rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .vip-orders-header::after {
+        content: "";
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: var(--vip-gradient);
+        border-radius: 2px;
+    }
+    
+    .vip-no-orders {
+        background: white;
+        border-radius: 20px;
+        padding: 50px;
+        text-align: center;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+        max-width: 800px;
+        margin: 50px auto;
+    }
+    
+    .vip-no-orders-icon {
+        font-size: 5rem;
+        color: #cbd5e1;
+        margin-bottom: 20px;
+    }
+    
+    .vip-no-orders-title {
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--dark);
+        font-size: 1.8rem;
+    }
+    
+    .vip-no-orders-text {
+        color: #64748b;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+    
+    .vip-orders-accordion {
+        margin-top: 30px;
+    }
+    
+    .vip-accordion-item {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+        border: none;
+    }
+    
+    .vip-accordion-header {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(139, 92, 246, 0.05));
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .vip-accordion-button {
+        background: transparent !important;
+        border: none !important;
+        padding: 25px 30px !important;
+        font-weight: 700;
+        color: var(--dark);
+        box-shadow: none !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .vip-accordion-button:not(.collapsed) {
+        color: var(--dark);
+    }
+    
+    .vip-accordion-button::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230f172a'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        transform: none;
+        transition: transform 0.3s;
+    }
+    
+    .vip-accordion-button:not(.collapsed)::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230f172a'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        transform: rotate(-180deg);
+    }
+    
+    .vip-order-header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        align-items: center;
+    }
+    
+    .vip-order-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .vip-order-number {
+        font-weight: 700;
+        font-size: 1.1rem;
+        background: var(--vip-gradient);
+        color: white;
+        padding: 6px 15px;
+        border-radius: 50px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .vip-order-status {
+        font-weight: 600;
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+    }
+    
+    .status-processing {
+        background: #fef3c7;
+        color: #d97706;
+    }
+    
+    .status-shipped {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+    
+    .status-delivered {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+    
+    .vip-order-meta {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+    
+    .vip-order-meta-item {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    
+    .vip-order-meta-label {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin-bottom: 4px;
+    }
+    
+    .vip-order-meta-value {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+    
+    .vip-order-total {
+        color: #2563eb;
+    }
+    
+    .vip-accordion-body {
+        padding: 30px;
+    }
+    
+    .vip-order-details {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 30px;
+    }
+    
+    .vip-order-products {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 25px;
+    }
+    
+    .vip-order-products-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .vip-order-product {
+        display: flex;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .vip-order-product:last-child {
+        border-bottom: none;
+    }
+    
+    .vip-order-product-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 12px;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+        overflow: hidden;
+    }
+    
+    .vip-order-product-img img {
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+    }
+    
+    .vip-order-product-info {
+        flex: 1;
+    }
+    
+    .vip-order-product-name {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--dark);
+    }
+    
+    .vip-order-product-category {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+    
+    .vip-order-product-price {
+        font-weight: 700;
+        color: var(--dark);
+    }
+    
+    .vip-order-product-quantity {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        min-width: 120px;
+        justify-content: flex-end;
+    }
+    
+    .vip-order-summary {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 25px;
+    }
+    
+    .vip-order-summary-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .vip-order-summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .vip-order-summary-label {
+        color: #64748b;
+    }
+    
+    .vip-order-summary-value {
+        font-weight: 600;
+        color: var(--dark);
+    }
+    
+    .vip-order-total-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 0;
+        margin: 15px 0;
+        font-size: 1.2rem;
+        font-weight: 800;
+        border-top: 2px dashed #e2e8f0;
+        border-bottom: 2px dashed #e2e8f0;
+    }
+    
+    .vip-order-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    .vip-order-action-btn {
+        flex: 1;
+        padding: 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .vip-order-track-btn {
+        background: var(--vip-gradient);
+        color: white;
+        border: none;
+    }
+    
+    .vip-order-track-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+    
+    .vip-order-reorder-btn {
+        background: white;
+        border: 2px solid #2563eb;
+        color: #2563eb;
+    }
+    
+    .vip-order-reorder-btn:hover {
+        background: #2563eb;
+        color: white;
+    }
+    /* Responsive adjustments */
+    
+    @media (max-width: 1200px) {
+        .vip-order-details {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 992px) {
+        .vip-accordion-button {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        .vip-order-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .vip-order-meta {
+            width: 100%;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .vip-order-meta-item {
+            align-items: flex-start;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .vip-orders-title {
+            font-size: 2rem;
+        }
+        .vip-order-product {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .vip-order-product-img {
+            margin-right: 0;
+            margin-bottom: 15px;
+        }
+        .vip-order-product-quantity {
+            width: 100%;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .vip-order-actions {
+            flex-direction: column;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .vip-orders-title {
+            font-size: 1.8rem;
+        }
+        .vip-no-orders {
+            padding: 30px 20px;
+        }
+        .vip-order-info {
+            flex-wrap: wrap;
+        }
+        .vip-order-meta {
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .vip-order-meta-item {
+            min-width: 45%;
+        }
+    }
+</style>
+
+<div class="vip-orders-container">
+    <div class="vip-orders-header">
+        <h1 class="vip-orders-title">My VIP Orders</h1>
+        <p class="vip-orders-subtitle">View your order history and track your VIP shipments</p>
+    </div>
+
+    {% if not orders %}
+    <div class="vip-no-orders">
+        <div class="vip-no-orders-icon">
+            <i class="fas fa-box-open"></i>
+        </div>
+        <h3 class="vip-no-orders-title">No VIP Orders Yet</h3>
+        <p class="vip-no-orders-text">
+            You haven't placed any orders with your VIP account. Start shopping to enjoy exclusive discounts and benefits!
+        </p>
+        <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-shopping-bag me-2"></i>Shop VIP Collection
+        </a>
+    </div>
+    {% else %}
+    <div class="vip-orders-accordion accordion" id="ordersAccordion">
+        {% for order in orders %}
+        <div class="vip-accordion-item">
+            <div class="vip-accordion-header" id="heading{{ order.id }}">
+                <button class="vip-accordion-button accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ order.id }}">
+                    <div class="vip-order-header">
+                        <div class="vip-order-info">
+                            <div class="vip-order-number">Order #{{ order.id }}</div>
+                            <div class="vip-order-status status-{{ order.status|lower }}">
+                                {{ order.status }}
+                            </div>
+                        </div>
+                        
+                        <div class="vip-order-meta">
+                            <div class="vip-order-meta-item">
+                                <div class="vip-order-meta-label">Date</div>
+                                <div class="vip-order-meta-value">{{ order.created_at.strftime('%b %d, %Y') }}</div>
+                            </div>
+                            
+                            <div class="vip-order-meta-item">
+                                <div class="vip-order-meta-label">Items</div>
+                                <div class="vip-order-meta-value">{{ order.items|length }}</div>
+                            </div>
+                            
+                            <div class="vip-order-meta-item">
+                                <div class="vip-order-meta-label">Total</div>
+                                <div class="vip-order-meta-value vip-order-total">${{ order.total }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <div id="collapse{{ order.id }}" class="accordion-collapse collapse" data-bs-parent="#ordersAccordion">
+                <div class="vip-accordion-body accordion-body">
+                    <div class="vip-order-details">
+                        <div class="vip-order-products">
+                            <h3 class="vip-order-products-title">Order Items</h3>
+
+                            {% for item in order.items %}
+                            <div class="vip-order-product">
+                                <div class="vip-order-product-img">
+                                    <img src="{{ item.product.image_url or 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80' }}" alt="{{ item.product.name }}">
+                                </div>
+
+                                <div class="vip-order-product-info">
+                                    <div class="vip-order-product-name">{{ item.product.name }}</div>
+                                    <div class="vip-order-product-category">{{ item.product.category }}</div>
+                                    <div class="vip-order-product-price">${{ item.product.price }}</div>
+                                </div>
+
+                                <div class="vip-order-product-quantity">
+                                    <div class="vip-order-product-meta">
+                                        <div class="vip-order-meta-label">Quantity</div>
+                                        <div class="vip-order-meta-value">{{ item.quantity }}</div>
+                                    </div>
+
+                                    <div class="vip-order-product-meta">
+                                        <div class="vip-order-meta-label">Total</div>
+                                        <div class="vip-order-meta-value">${{ item.product.price * item.quantity }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="vip-order-summary">
+                            <h3 class="vip-order-summary-title">Order Summary</h3>
+
+                            <div class="vip-order-summary-item">
+                                <div class="vip-order-summary-label">Subtotal</div>
+                                <div class="vip-order-summary-value">${{ order.total - 10 }}</div>
+                            </div>
+
+                            <div class="vip-order-summary-item">
+                                <div class="vip-order-summary-label">VIP Discount</div>
+                                <div class="vip-order-summary-value">- $10.00</div>
+                            </div>
+
+                            <div class="vip-order-summary-item">
+                                <div class="vip-order-summary-label">Shipping</div>
+                                <div class="vip-order-summary-value">Free</div>
+                            </div>
+
+                            <div class="vip-order-summary-item">
+                                <div class="vip-order-summary-label">Tax</div>
+                                <div class="vip-order-summary-value">${{ (order.total * 0.08)|round(2) }}</div>
+                            </div>
+
+                            <div class="vip-order-total-row">
+                                <div>Total</div>
+                                <div>${{ order.total }}</div>
+                            </div>
+
+                            <div class="vip-order-summary-item">
+                                <div class="vip-order-summary-label">Payment Method</div>
+                                <div class="vip-order-summary-value">Visa ending in 4242</div>
+                            </div>
+
+                            <div class="vip-order-summary-item">
+                                <div class="vip-order-summary-label">Shipping Address</div>
+                                <div class="vip-order-summary-value">
+                                    123 Tech Street<br> San Francisco, CA 94103<br> United States
+                                </div>
+                            </div>
+
+                            <div class="vip-order-actions">
+                                <a href="#" class="vip-order-action-btn vip-order-track-btn">
+                                    <i class="fas fa-truck"></i> Track Package
+                                </a>
+                                <a href="#" class="vip-order-action-btn vip-order-reorder-btn">
+                                    <i class="fas fa-sync-alt"></i> Reorder
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

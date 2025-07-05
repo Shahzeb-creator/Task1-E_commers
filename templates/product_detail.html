@@ -1,0 +1,663 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+    /* VIP Product Detail Styles */
+    
+     :root {
+        --vip-gradient: linear-gradient(135deg, #2563eb, #8b5cf6);
+        --gold: #f59e0b;
+        --dark: #0f172a;
+        --light: #f8fafc;
+    }
+    
+    .vip-product-detail {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+    
+    .vip-product-header {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    
+    .vip-product-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        background: var(--vip-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .vip-product-title::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: var(--vip-gradient);
+        border-radius: 2px;
+    }
+    
+    .vip-product-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 60px;
+    }
+    
+    .vip-product-gallery {
+        position: relative;
+    }
+    
+    .vip-main-image {
+        background: #f8fafc;
+        border-radius: 20px;
+        padding: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 500px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+    
+    .vip-main-image img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+    
+    .vip-thumbnails {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+    }
+    
+    .vip-thumbnail {
+        width: 80px;
+        height: 80px;
+        border-radius: 12px;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.3s;
+        overflow: hidden;
+    }
+    
+    .vip-thumbnail:hover,
+    .vip-thumbnail.active {
+        border-color: #2563eb;
+        transform: translateY(-5px);
+    }
+    
+    .vip-thumbnail img {
+        max-height: 90%;
+        max-width: 90%;
+        object-fit: contain;
+    }
+    
+    .vip-badge {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: var(--vip-gradient);
+        color: white;
+        font-weight: 700;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+    }
+    
+    .vip-vip-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: var(--gold);
+        color: white;
+        font-weight: 700;
+        padding: 8px 15px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+    }
+    
+    .vip-product-info {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+        position: relative;
+    }
+    
+    .vip-product-category {
+        display: inline-block;
+        background: #e0f2fe;
+        color: #0ea5e9;
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+    
+    .vip-product-price {
+        font-weight: 800;
+        font-size: 2.5rem;
+        color: #2563eb;
+        margin-bottom: 25px;
+    }
+    
+    .vip-product-description {
+        color: #64748b;
+        line-height: 1.8;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+    
+    .vip-product-meta {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .vip-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px;
+        background: #f8fafc;
+        border-radius: 12px;
+    }
+    
+    .vip-meta-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--vip-gradient);
+        color: white;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+    
+    .vip-meta-content h4 {
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 5px;
+        color: var(--dark);
+    }
+    
+    .vip-meta-content p {
+        color: #64748b;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+    
+    .vip-benefits-box {
+        background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-left: 4px solid #2563eb;
+    }
+    
+    .vip-benefits-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .vip-benefits-title i {
+        color: var(--gold);
+    }
+    
+    .vip-benefits-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .vip-benefits-list li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .vip-benefits-list li i {
+        color: #10b981;
+    }
+    
+    .vip-add-to-cart-form {
+        margin-top: 30px;
+    }
+    
+    .vip-quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .vip-quantity-label {
+        font-weight: 600;
+        color: var(--dark);
+    }
+    
+    .vip-quantity-input {
+        display: flex;
+        align-items: center;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        overflow: hidden;
+        width: 140px;
+    }
+    
+    .vip-quantity-btn {
+        background: #f1f5f9;
+        border: none;
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .vip-quantity-btn:hover {
+        background: #e2e8f0;
+    }
+    
+    .vip-quantity-value {
+        width: 60px;
+        text-align: center;
+        border: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+    
+    .vip-add-to-cart-btn {
+        background: var(--vip-gradient);
+        color: white;
+        border: none;
+        padding: 18px;
+        font-weight: 600;
+        border-radius: 12px;
+        width: 100%;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+    
+    .vip-add-to-cart-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4);
+    }
+    
+    .vip-related-products {
+        margin-top: 60px;
+    }
+    
+    .vip-section-header {
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+    }
+    
+    .vip-section-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 2rem;
+        display: inline-block;
+        background: var(--vip-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 15px;
+    }
+    
+    .vip-section-header::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: var(--vip-gradient);
+        border-radius: 2px;
+    }
+    
+    .vip-related-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+    }
+    
+    .vip-related-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+        transition: all 0.4s ease;
+        position: relative;
+    }
+    
+    .vip-related-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(37, 99, 235, 0.15);
+    }
+    
+    .vip-related-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 1;
+        background: var(--vip-gradient);
+        color: white;
+        font-weight: 700;
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .vip-related-image {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8fafc;
+        padding: 20px;
+    }
+    
+    .vip-related-image img {
+        max-height: 160px;
+        transition: transform 0.4s;
+    }
+    
+    .vip-related-card:hover .vip-related-image img {
+        transform: scale(1.05);
+    }
+    
+    .vip-related-body {
+        padding: 25px;
+    }
+    
+    .vip-related-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        color: var(--dark);
+    }
+    
+    .vip-related-price {
+        font-weight: 800;
+        font-size: 1.3rem;
+        color: #2563eb;
+        margin-bottom: 15px;
+    }
+    
+    .vip-related-link {
+        display: block;
+        text-align: center;
+        background: transparent;
+        border: 2px solid #2563eb;
+        color: #2563eb;
+        font-weight: 600;
+        padding: 8px 15px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .vip-related-link:hover {
+        background: #2563eb;
+        color: white;
+    }
+    /* Responsive adjustments */
+    
+    @media (max-width: 1200px) {
+        .vip-main-image {
+            height: 400px;
+        }
+    }
+    
+    @media (max-width: 992px) {
+        .vip-product-container {
+            grid-template-columns: 1fr;
+        }
+        .vip-main-image {
+            height: 350px;
+        }
+        .vip-product-title {
+            font-size: 2.2rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .vip-product-meta {
+            grid-template-columns: 1fr;
+        }
+        .vip-product-title {
+            font-size: 1.8rem;
+        }
+        .vip-product-price {
+            font-size: 2rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .vip-main-image {
+            height: 300px;
+            padding: 15px;
+        }
+        .vip-product-info {
+            padding: 25px;
+        }
+        .vip-thumbnails {
+            flex-wrap: wrap;
+        }
+    }
+</style>
+
+<div class="vip-product-detail">
+    <div class="vip-product-header">
+        <h1 class="vip-product-title">{{ product.name }}</h1>
+    </div>
+
+    <div class="vip-product-container">
+        <div class="vip-product-gallery">
+            <div class="vip-main-image">
+                <img src="{{ product.image_url or 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }}" alt="{{ product.name }}" id="mainImage">
+                <span class="vip-badge">{{ product.category }}</span>
+                <span class="vip-vip-badge">VIP Exclusive</span>
+            </div>
+
+            <div class="vip-thumbnails">
+                <div class="vip-thumbnail active">
+                    <img src="{{ product.image_url or 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80' }}" alt="Thumbnail 1" onclick="changeImage(this.src)">
+                </div>
+                <div class="vip-thumbnail">
+                    <img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Thumbnail 2" onclick="changeImage(this.src)">
+                </div>
+                <div class="vip-thumbnail">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Thumbnail 3" onclick="changeImage(this.src)">
+                </div>
+                <div class="vip-thumbnail">
+                    <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Thumbnail 4" onclick="changeImage(this.src)">
+                </div>
+            </div>
+        </div>
+
+        <div class="vip-product-info">
+            <span class="vip-product-category">{{ product.category }}</span>
+            <div class="vip-product-price">${{ product.price }}</div>
+
+            <div class="vip-product-description">
+                {{ product.description }}
+            </div>
+
+            <div class="vip-product-meta">
+                <div class="vip-meta-item">
+                    <div class="vip-meta-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="vip-meta-content">
+                        <h4>In Stock</h4>
+                        <p>Ready to ship within 24 hours</p>
+                    </div>
+                </div>
+
+                <div class="vip-meta-item">
+                    <div class="vip-meta-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="vip-meta-content">
+                        <h4>3-Year Warranty</h4>
+                        <p>Extended VIP coverage</p>
+                    </div>
+                </div>
+
+                <div class="vip-meta-item">
+                    <div class="vip-meta-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <div class="vip-meta-content">
+                        <h4>Free Shipping</h4>
+                        <p>VIP priority delivery</p>
+                    </div>
+                </div>
+
+                <div class="vip-meta-item">
+                    <div class="vip-meta-icon">
+                        <i class="fas fa-undo"></i>
+                    </div>
+                    <div class="vip-meta-content">
+                        <h4>30-Day Returns</h4>
+                        <p>No questions asked</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vip-benefits-box">
+                <h3 class="vip-benefits-title">
+                    <i class="fas fa-crown"></i> VIP Exclusive Benefits
+                </h3>
+                <ul class="vip-benefits-list">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>10% discount applied at checkout</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Free priority shipping with tracking</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Extended 3-year warranty coverage</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Dedicated VIP support line</span>
+                    </li>
+                </ul>
+            </div>
+
+            <form method="POST" action="{{ url_for('add_to_cart') }}" class="vip-add-to-cart-form">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+
+                <div class="vip-quantity-control">
+                    <div class="vip-quantity-label">Quantity:</div>
+                    <div class="vip-quantity-input">
+                        <button type="button" class="vip-quantity-btn" onclick="decreaseQuantity()">-</button>
+                        <input type="number" name="quantity" value="1" min="1" class="vip-quantity-value" id="quantityInput">
+                        <button type="button" class="vip-quantity-btn" onclick="increaseQuantity()">+</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="vip-add-to-cart-btn">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% if related_products %}
+    <div class="vip-related-products">
+        <div class="vip-section-header">
+            <h2 class="vip-section-title">Related Products</h2>
+        </div>
+
+        <div class="vip-related-grid">
+            {% for product in related_products %}
+            <div class="vip-related-card">
+                <div class="vip-related-image">
+                    <img src="{{ product.image_url or 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80' }}" alt="{{ product.name }}">
+                    <span class="vip-related-badge">{{ product.category }}</span>
+                </div>
+                <div class="vip-related-body">
+                    <h3 class="vip-related-title">{{ product.name }}</h3>
+                    <div class="vip-related-price">${{ product.price }}</div>
+                    <a href="{{ url_for('product_detail', id=product.id) }}" class="vip-related-link">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Change main image when thumbnail is clicked
+    function changeImage(src) {
+        document.getElementById('mainImage').src = src;
+
+        // Update active thumbnail
+        document.querySelectorAll('.vip-thumbnail').forEach(thumb => {
+            thumb.classList.remove('active');
+        });
+        event.currentTarget.parentElement.classList.add('active');
+    }
+
+    // Quantity controls
+    function increaseQuantity() {
+        const input = document.getElementById('quantityInput');
+        input.value = parseInt(input.value) + 1;
+    }
+
+    function decreaseQuantity() {
+        const input = document.getElementById('quantityInput');
+        if (parseInt(input.value) > 1) {
+            input.value = parseInt(input.value) - 1;
+        }
+    }
+</script>
+{% endblock %}

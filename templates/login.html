@@ -1,0 +1,475 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+    /* VIP Login Styles */
+    
+    .vip-login-container {
+        display: flex;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1e3a8a, #4c1d95);
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .vip-login-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 40%);
+        z-index: 0;
+    }
+    
+    .vip-login-left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 50px;
+        color: white;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .vip-login-brand {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .vip-login-brand i {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        padding: 15px;
+        margin-right: 15px;
+        backdrop-filter: blur(5px);
+    }
+    
+    .vip-login-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 3rem;
+        line-height: 1.2;
+        margin-bottom: 20px;
+        max-width: 500px;
+    }
+    
+    .vip-login-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 40px;
+        max-width: 500px;
+    }
+    
+    .vip-benefits-list {
+        list-style: none;
+        padding: 0;
+        max-width: 500px;
+    }
+    
+    .vip-benefits-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        font-size: 1.1rem;
+    }
+    
+    .vip-benefits-list i {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-size: 1.2rem;
+        color: #f59e0b;
+    }
+    
+    .vip-login-right {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .vip-login-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 40px;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        transform: perspective(1000px) rotateY(5deg);
+        transition: transform 0.5s ease;
+    }
+    
+    .vip-login-card:hover {
+        transform: perspective(1000px) rotateY(0deg);
+    }
+    
+    .vip-login-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .vip-login-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #2563eb, #8b5cf6);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+        color: white;
+    }
+    
+    .vip-login-heading {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 2rem;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #2563eb, #8b5cf6);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    
+    .vip-login-subheading {
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+    
+    .vip-form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+    
+    .vip-form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+    }
+    
+    .vip-form-label i {
+        margin-right: 10px;
+        color: #2563eb;
+    }
+    
+    .vip-form-control {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s;
+        background: white;
+    }
+    
+    .vip-form-control:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+        outline: none;
+    }
+    
+    .vip-form-remember {
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+    
+    .vip-form-checkbox {
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        border: 2px solid #cbd5e1;
+        margin-right: 10px;
+        position: relative;
+        cursor: pointer;
+    }
+    
+    .vip-form-checkbox input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+    
+    .vip-checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #2563eb, #8b5cf6);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .vip-form-checkbox input:checked~.vip-checkmark {
+        opacity: 1;
+    }
+    
+    .vip-checkmark i {
+        color: white;
+        font-size: 0.8rem;
+    }
+    
+    .vip-remember-label {
+        color: #64748b;
+        font-weight: 500;
+        cursor: pointer;
+    }
+    
+    .vip-login-btn {
+        background: linear-gradient(135deg, #2563eb, #8b5cf6);
+        color: white;
+        border: none;
+        padding: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        width: 100%;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+    
+    .vip-login-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4);
+    }
+    
+    .vip-divider {
+        display: flex;
+        align-items: center;
+        margin: 25px 0;
+    }
+    
+    .vip-divider-line {
+        flex: 1;
+        height: 1px;
+        background: #e2e8f0;
+    }
+    
+    .vip-divider-text {
+        padding: 0 15px;
+        color: #64748b;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    .vip-social-login {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .vip-social-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: white;
+        font-weight: 500;
+        color: #0f172a;
+        transition: all 0.3s;
+    }
+    
+    .vip-social-btn i {
+        margin-right: 8px;
+        font-size: 1.2rem;
+    }
+    
+    .vip-social-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .vip-login-footer {
+        text-align: center;
+        color: #64748b;
+    }
+    
+    .vip-login-footer a {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .vip-login-footer a:hover {
+        color: #1d4ed8;
+        text-decoration: underline;
+    }
+    
+    .vip-forgot-password {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #2563eb;
+        font-weight: 500;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+    
+    .vip-forgot-password:hover {
+        color: #1d4ed8;
+        text-decoration: underline;
+    }
+    /* Responsive adjustments */
+    
+    @media (max-width: 992px) {
+        .vip-login-container {
+            flex-direction: column;
+        }
+        .vip-login-left {
+            padding: 30px 20px;
+            text-align: center;
+            align-items: center;
+        }
+        .vip-login-brand {
+            justify-content: center;
+        }
+        .vip-benefits-list {
+            max-width: 100%;
+        }
+        .vip-login-right {
+            padding: 20px;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .vip-login-title {
+            font-size: 2.2rem;
+        }
+        .vip-login-card {
+            padding: 30px 20px;
+        }
+        .vip-social-login {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="vip-login-container">
+    <div class="vip-login-left">
+        <div class="vip-login-brand">
+            <i class="fas fa-laptop-code"></i> Memon TechShop
+        </div>
+
+        <h2 class="vip-login-title">VIP Member Login</h2>
+        <p class="vip-login-subtitle">Access exclusive benefits, premium support, and VIP-only discounts</p>
+
+        <ul class="vip-benefits-list">
+            <li>
+                <i class="fas fa-percentage"></i>
+                <span>Exclusive VIP discounts on all products</span>
+            </li>
+            <li>
+                <i class="fas fa-shipping-fast"></i>
+                <span>Free priority shipping on every order</span>
+            </li>
+            <li>
+                <i class="fas fa-headset"></i>
+                <span>24/7 dedicated VIP support team</span>
+            </li>
+            <li>
+                <i class="fas fa-gift"></i>
+                <span>Special birthday gifts and promotions</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="vip-login-right">
+        <div class="vip-login-card">
+            <div class="vip-login-header">
+                <div class="vip-login-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h2 class="vip-login-heading">Sign In</h2>
+                <p class="vip-login-subheading">Welcome back to your VIP experience</p>
+            </div>
+
+            <form method="POST">
+                <div class="vip-form-group">
+                    <label for="username" class="vip-form-label">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <input type="text" class="vip-form-control" id="username" name="username" required>
+                </div>
+
+                <div class="vip-form-group">
+                    <label for="password" class="vip-form-label">
+                        <i class="fas fa-key"></i> Password
+                    </label>
+                    <input type="password" class="vip-form-control" id="password" name="password" required>
+                </div>
+
+                <div class="vip-form-remember">
+                    <div class="vip-form-checkbox">
+                        <input type="checkbox" id="remember" name="remember">
+                        <span class="vip-checkmark">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </div>
+                    <label for="remember" class="vip-remember-label">Remember me</label>
+                </div>
+
+                <button type="submit" class="vip-login-btn">
+                    Sign In to VIP Account
+                </button>
+
+                <a href="#" class="vip-forgot-password">
+                    Forgot your password?
+                </a>
+
+                <div class="vip-divider">
+                    <div class="vip-divider-line"></div>
+                    <div class="vip-divider-text">or continue with</div>
+                    <div class="vip-divider-line"></div>
+                </div>
+
+                <div class="vip-social-login">
+                    <button type="button" class="vip-social-btn">
+                        <i class="fab fa-google"></i> Google
+                    </button>
+                    <button type="button" class="vip-social-btn">
+                        <i class="fab fa-apple"></i> Apple
+                    </button>
+                    <button type="button" class="vip-social-btn">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </button>
+                </div>
+
+                <div class="vip-login-footer">
+                    <p>Don't have a VIP account? <a href="{{ url_for('register') }}">Join now</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

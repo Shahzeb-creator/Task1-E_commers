@@ -1,0 +1,80 @@
+<style>
+    /* VIP Badge Styles */
+    
+    .vip-badge {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: var(--vip-gradient);
+        color: white;
+        font-weight: 700;
+        font-size: 0.8rem;
+        padding: 5px 12px;
+        border-radius: 50px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        z-index: 10;
+    }
+    /* Enhanced VIP Status */
+    
+    .status-vip {
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
+        color: #d97706;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .status-vip::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0) 0%, rgba(251, 191, 36, 0.4) 50%, rgba(251, 191, 36, 0) 100%);
+        animation: vipShine 3s infinite;
+    }
+    
+    @keyframes vipShine {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(100%);
+        }
+    }
+    /* VIP Product Badge */
+    
+    .vip-product-badge {
+        background: var(--vip-gradient);
+        color: white;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 4px;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+</style>
+
+<!-- Add to order header -->
+<div class="vip-order-info">
+    <div class="vip-order-number">Order #{{ order.id }}
+        <div class="vip-badge">VIP</div>
+    </div>
+    <!-- ... -->
+</div>
+
+<!-- Add to product info -->
+<div class="vip-order-product-info">
+    <div class="vip-order-product-name">
+        {{ item.product.name }} {% if item.product.vip_exclusive %}
+        <span class="vip-product-badge">VIP EXCLUSIVE</span> {% endif %}
+    </div>
+    <!-- ... -->
+</div>
+
+<!-- Update status classes -->
+<div class="vip-order-status status-{{ order.status|lower }} {% if order.vip %}status-vip{% endif %}">
+    {{ order.status }}
+</div>

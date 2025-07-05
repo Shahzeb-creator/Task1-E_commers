@@ -1,0 +1,594 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+    /* VIP Home Page Styles */
+    
+    .vip-home-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    /* VIP Hero Section */
+    
+    .vip-hero {
+        background: linear-gradient(135deg, #2563eb, #8b5cf6), url('https://images.unsplash.com/photo-1550009158-9ebf69173e03?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: white;
+        padding: 120px 0;
+        border-radius: 20px;
+        margin-bottom: 60px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(37, 99, 235, 0.3);
+    }
+    
+    .vip-hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, transparent 30%, rgba(15, 23, 42, 0.7) 100%);
+        z-index: 0;
+    }
+    
+    .vip-hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 700px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .vip-hero-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 3.5rem;
+        line-height: 1.2;
+        margin-bottom: 20px;
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .vip-hero-subtitle {
+        font-size: 1.4rem;
+        font-weight: 300;
+        margin-bottom: 35px;
+        opacity: 0.9;
+    }
+    
+    .btn-vip-hero {
+        background: white;
+        color: #2563eb;
+        border: none;
+        padding: 15px 40px;
+        font-weight: 700;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-vip-hero::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #2563eb, #8b5cf6);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 0;
+    }
+    
+    .btn-vip-hero:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(37, 99, 235, 0.5);
+        color: white;
+    }
+    
+    .btn-vip-hero:hover::after {
+        opacity: 1;
+    }
+    
+    .btn-vip-hero span {
+        position: relative;
+        z-index: 1;
+    }
+    /* VIP Section Headers */
+    
+    .vip-section-header {
+        text-align: center;
+        margin-bottom: 50px;
+        position: relative;
+    }
+    
+    .vip-section-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 2.5rem;
+        display: inline-block;
+        background: linear-gradient(135deg, #2563eb, #8b5cf6);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 15px;
+    }
+    
+    .vip-section-subtitle {
+        color: #64748b;
+        font-size: 1.2rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .vip-section-header::after {
+        content: "";
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(135deg, #2563eb, #8b5cf6);
+        border-radius: 2px;
+    }
+    /* VIP Featured Products */
+    
+    .vip-featured-products {
+        margin-bottom: 80px;
+    }
+    
+    .vip-product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+    }
+    
+    .vip-product-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s ease;
+        position: relative;
+        height: 100%;
+    }
+    
+    .vip-product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(37, 99, 235, 0.2);
+    }
+    
+    .vip-product-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 1;
+        background: linear-gradient(135deg, #2563eb, #8b5cf6);
+        color: white;
+        font-weight: 700;
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .vip-featured-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #f59e0b;
+        color: white;
+        font-weight: 700;
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .vip-product-image {
+        height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8fafc;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .vip-product-image img {
+        max-height: 180px;
+        transition: transform 0.4s;
+    }
+    
+    .vip-product-card:hover .vip-product-image img {
+        transform: scale(1.05);
+    }
+    
+    .vip-product-body {
+        padding: 25px;
+    }
+    
+    .vip-product-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 10px;
+        color: #0f172a;
+    }
+    
+    .vip-product-price {
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: #2563eb;
+        margin-bottom: 15px;
+    }
+    
+    .vip-product-description {
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+        min-height: 60px;
+    }
+    
+    .vip-product-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    
+    .btn-view-details {
+        background: transparent;
+        border: 2px solid #2563eb;
+        color: #2563eb;
+        font-weight: 600;
+        padding: 8px 15px;
+        border-radius: 8px;
+        flex-grow: 1;
+        transition: all 0.3s;
+    }
+    
+    .btn-view-details:hover {
+        background: #2563eb;
+        color: white;
+    }
+    
+    .btn-add-to-cart {
+        background: linear-gradient(135deg, #2563eb, #8b5cf6);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        font-weight: 600;
+        border-radius: 8px;
+        flex-grow: 1;
+        transition: all 0.3s;
+    }
+    
+    .btn-add-to-cart:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(37, 99, 235, 0.3);
+    }
+    /* VIP Categories */
+    
+    .vip-categories {
+        margin-bottom: 80px;
+    }
+    
+    .vip-categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+    
+    .vip-category-card {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        height: 300px;
+        transition: all 0.4s ease;
+    }
+    
+    .vip-category-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(37, 99, 235, 0.2);
+    }
+    
+    .vip-category-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .vip-category-card:hover .vip-category-image {
+        transform: scale(1.05);
+    }
+    
+    .vip-category-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 30px;
+        background: linear-gradient(transparent, rgba(15, 23, 42, 0.8));
+    }
+    
+    .vip-category-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: white;
+        margin-bottom: 15px;
+    }
+    
+    .btn-category {
+        background: transparent;
+        border: 2px solid white;
+        color: white;
+        font-weight: 600;
+        padding: 8px 25px;
+        border-radius: 50px;
+        transition: all 0.3s;
+    }
+    
+    .btn-category:hover {
+        background: white;
+        color: #2563eb;
+    }
+    /* VIP Benefits Section */
+    
+    .vip-benefits {
+        background: linear-gradient(135deg, #1e3a8a, #4c1d95);
+        border-radius: 20px;
+        padding: 60px 40px;
+        margin: 80px 0;
+        color: white;
+        box-shadow: 0 20px 50px rgba(37, 99, 235, 0.3);
+    }
+    
+    .vip-benefits-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+    
+    .vip-benefits-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+    
+    .vip-benefits-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .vip-benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+    }
+    
+    .vip-benefit-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 30px;
+        text-align: center;
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+    }
+    
+    .vip-benefit-card:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-10px);
+    }
+    
+    .vip-benefit-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        color: #f59e0b;
+    }
+    
+    .vip-benefit-title {
+        font-weight: 700;
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+    }
+    
+    .vip-benefit-description {
+        opacity: 0.85;
+    }
+    /* Responsive Adjustments */
+    
+    @media (max-width: 1200px) {
+        .vip-hero-title {
+            font-size: 3rem;
+        }
+    }
+    
+    @media (max-width: 992px) {
+        .vip-hero-title {
+            font-size: 2.5rem;
+        }
+        .vip-hero-subtitle {
+            font-size: 1.2rem;
+        }
+        .vip-section-title {
+            font-size: 2.2rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .vip-hero {
+            padding: 80px 0;
+        }
+        .vip-hero-title {
+            font-size: 2.2rem;
+        }
+        .vip-hero-subtitle {
+            font-size: 1.1rem;
+        }
+        .vip-section-title {
+            font-size: 2rem;
+        }
+        .vip-benefits {
+            padding: 40px 20px;
+        }
+        .vip-benefits-title {
+            font-size: 2rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .vip-hero-title {
+            font-size: 1.8rem;
+        }
+        .vip-section-title {
+            font-size: 1.7rem;
+        }
+        .vip-benefits-title {
+            font-size: 1.8rem;
+        }
+        .vip-product-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="vip-home-container">
+    <!-- VIP Hero Section -->
+    <section class="vip-hero">
+        <div class="vip-hero-content">
+            <h1 class="vip-hero-title">Premium Tech Experience</h1>
+            <p class="vip-hero-subtitle">Discover cutting-edge electronics and gadgets with exclusive VIP benefits, premium support, and member-only discounts.</p>
+            <a href="{{ url_for('products') }}" class="btn btn-vip-hero">
+                <span>Shop VIP Collection</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="vip-featured-products">
+        <div class="vip-section-header">
+            <h2 class="vip-section-title">Featured Products</h2>
+            <p class="vip-section-subtitle">Discover our premium selection of cutting-edge electronics and gadgets</p>
+        </div>
+
+        <div class="vip-product-grid">
+            {% for product in products %}
+            <div class="vip-product-card">
+                <div class="vip-product-image">
+                    <img src="{{ product.image_url or 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' }}" alt="{{ product.name }}">
+                    <span class="vip-product-badge">{{ product.category }}</span>
+                    <span class="vip-featured-badge">Featured</span>
+                </div>
+                <div class="vip-product-body">
+                    <h3 class="vip-product-title">{{ product.name }}</h3>
+                    <div class="vip-product-price">${{ product.price }}</div>
+                    <p class="vip-product-description">{{ product.description|truncate(100) }}</p>
+                    <div class="vip-product-actions">
+                        <a href="{{ url_for('product_detail', id=product.id) }}" class="btn btn-view-details">
+                            <i class="fas fa-eye me-2"></i>Details
+                        </a>
+                        <a href="#" class="btn btn-add-to-cart">
+                            <i class="fas fa-shopping-cart me-2"></i>Add
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- VIP Benefits Section -->
+    <section class="vip-benefits">
+        <div class="vip-benefits-header">
+            <h2 class="vip-benefits-title">VIP Membership Benefits</h2>
+            <p class="vip-benefits-subtitle">Experience premium shopping with exclusive perks and privileges</p>
+        </div>
+
+        <div class="vip-benefits-grid">
+            <div class="vip-benefit-card">
+                <div class="vip-benefit-icon">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <h3 class="vip-benefit-title">Exclusive Discounts</h3>
+                <p class="vip-benefit-description">Enjoy 10-20% off on all products with your VIP membership</p>
+            </div>
+
+            <div class="vip-benefit-card">
+                <div class="vip-benefit-icon">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <h3 class="vip-benefit-title">Free Priority Shipping</h3>
+                <p class="vip-benefit-description">Get free expedited shipping on all orders with no minimum purchase</p>
+            </div>
+
+            <div class="vip-benefit-card">
+                <div class="vip-benefit-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3 class="vip-benefit-title">Premium Support</h3>
+                <p class="vip-benefit-description">24/7 dedicated support line for VIP members with priority response</p>
+            </div>
+
+            <div class="vip-benefit-card">
+                <div class="vip-benefit-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h3 class="vip-benefit-title">Early Access & Gifts</h3>
+                <p class="vip-benefit-description">Be the first to get new products and receive special birthday gifts</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="vip-categories">
+        <div class="vip-section-header">
+            <h2 class="vip-section-title">Shop by Category</h2>
+            <p class="vip-section-subtitle">Browse our premium selection of tech products by category</p>
+        </div>
+
+        <div class="vip-categories-grid">
+            <div class="vip-category-card">
+                <img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Electronics" class="vip-category-image">
+                <div class="vip-category-overlay">
+                    <h3 class="vip-category-title">Electronics</h3>
+                    <a href="{{ url_for('products') }}?category=Electronics" class="btn btn-category">
+                        Browse Collection
+                    </a>
+                </div>
+            </div>
+
+            <div class="vip-category-card">
+                <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Accessories" class="vip-category-image">
+                <div class="vip-category-overlay">
+                    <h3 class="vip-category-title">Accessories</h3>
+                    <a href="{{ url_for('products') }}?category=Accessories" class="btn btn-category">
+                        Browse Collection
+                    </a>
+                </div>
+            </div>
+
+            <div class="vip-category-card">
+                <img src="https://images.unsplash.com/photo-1495640388908-05fa85288e61?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Books" class="vip-category-image">
+                <div class="vip-category-overlay">
+                    <h3 class="vip-category-title">Books</h3>
+                    <a href="{{ url_for('products') }}?category=Books" class="btn btn-category">
+                        Browse Collection
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
